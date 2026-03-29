@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { watch } from 'vue';
+import { ref, watch } from 'vue';
 import { X, Trash2 } from 'lucide-vue-next';
-import { ref } from 'vue';
 import { useTasks } from '../../composables/useTasks';
 import ConfirmModal from '../ui/ConfirmModal.vue';
 

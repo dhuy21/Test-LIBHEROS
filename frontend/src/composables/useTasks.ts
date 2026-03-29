@@ -41,6 +41,10 @@ export function useTasks() {
   const toggleTask = async (taskId: number, isCompleted: boolean, listId: number) => {
     await api.patch(`/tasks/${taskId}`, { isCompleted });
     await fetchTasks(listId);
+    // Rafraîchir le détail si c'est la tâche affichée
+    if (selectedTask.value?.id === taskId) {
+      selectedTask.value = { ...selectedTask.value, isCompleted };
+    }
   };
 
   const deleteTask = async (taskId: number, listId: number) => {
