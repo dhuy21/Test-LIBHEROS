@@ -15,6 +15,13 @@ const isOverdue = (date: string, completed: boolean) => {
   if (completed) return false;
   return new Date(date) < new Date(new Date().toDateString());
 };
+
+const formatDate = (date: string) => {
+  return new Date(date).toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'short',
+  });
+};
 </script>
 
 <template>
@@ -39,7 +46,7 @@ const isOverdue = (date: string, completed: boolean) => {
     <span
       :class="['text-xs shrink-0', isOverdue(task.dueDate, task.isCompleted) ? 'text-red-500 font-medium' : 'text-gray-400']"
     >
-      {{ task.dueDate }}
+      {{ formatDate(task.dueDate) }}
     </span>
   </div>
 </template>

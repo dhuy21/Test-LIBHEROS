@@ -38,8 +38,14 @@ export function useTaskLists() {
   };
 
   const deleteList = async (id: number) => {
-    await api.delete(`/task-lists/${id}`);
-    await fetchLists();
+    try {
+      await api.delete(`/task-lists/${id}`);
+      await fetchLists();
+      return true;
+    } catch {
+      error.value = 'Erreur lors de la suppression';
+      return false;
+    }
   };
 
   return { lists, loading, error, fetchLists, createList, deleteList };

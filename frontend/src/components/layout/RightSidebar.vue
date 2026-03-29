@@ -19,9 +19,11 @@ watch(
 
 const confirmDelete = async () => {
   if (!selectedTask.value) return;
-  await deleteTask(selectedTask.value.id, selectedTask.value.taskListId);
+  const ok = await deleteTask(selectedTask.value.id, selectedTask.value.taskListId);
   showDeleteModal.value = false;
-  emit('task-deleted');
+  if (ok) {
+    emit('task-deleted');
+  }
 };
 
 const formatDate = (date: string) => {

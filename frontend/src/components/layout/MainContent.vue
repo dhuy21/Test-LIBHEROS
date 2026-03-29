@@ -52,8 +52,8 @@ const handleToggle = async (taskId: number, isCompleted: boolean) => {
       <TaskForm @create="handleCreate" />
 
       <!-- Chargement -->
-      <div v-if="loading" class="text-center py-8">
-        <p class="text-gray-400">Chargement...</p>
+      <div v-if="loading" class="flex items-center justify-center py-12">
+        <div class="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
 
       <template v-else>

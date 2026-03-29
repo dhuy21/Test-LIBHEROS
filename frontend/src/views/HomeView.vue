@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import LeftSidebar from '../components/layout/LeftSidebar.vue';
 import MainContent from '../components/layout/MainContent.vue';
 import RightSidebar from '../components/layout/RightSidebar.vue';
 
-const sidebarCollapsed = ref(false);
+const sidebarCollapsed = ref(window.innerWidth < 768);
+
+// Auto-collapse sur petit écran
+const handleResize = () => {
+  sidebarCollapsed.value = window.innerWidth < 768;
+};
+onMounted(() => window.addEventListener('resize', handleResize));
+onUnmounted(() => window.removeEventListener('resize', handleResize));
 const selectedListId = ref<number | null>(null);
 const selectedTaskId = ref<number | null>(null);
 

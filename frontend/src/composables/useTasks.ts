@@ -14,6 +14,8 @@ export function useTasks() {
     try {
       const { data } = await api.get<Task[]>(`/task-lists/${listId}/tasks`);
       tasks.value = data;
+    } catch {
+      tasks.value = [];
     } finally {
       loading.value = false;
     }
@@ -25,31 +27,50 @@ export function useTasks() {
     dueDate: string,
     longDescription?: string,
   ) => {
-    await api.post(`/task-lists/${listId}/tasks`, {
-      shortDescription,
-      dueDate,
-      longDescription,
-    });
-    await fetchTasks(listId);
+    try {
+      await api.post(`/task-lists/${listId}/tasks`, {
+        shortDescription,
+        dueDate,
+        longDescription,
+      });
+      await fetchTasks(listId);
+    } catch {
+      // Recharger pour rester synchronisé avec le serveur
+      await fetchTasks(listId);
+    }
   };
 
   const fetchTaskDetail = async (taskId: number) => {
-    const { data } = await api.get<Task>(`/tasks/${taskId}`);
-    selectedTask.value = data;
+    try {
+      const { data } = await api.get<Task>(`/tasks/${taskId}`);
+      selectedTask.value = data;
+    } catch {
+      selectedTask.value = null;
+    }
   };
 
   const toggleTask = async (taskId: number, isCompleted: boolean, listId: number) => {
-    await api.patch(`/tasks/${taskId}`, { isCompleted });
-    await fetchTasks(listId);
-    // Rafraîchir le détail si c'est la tâche affichée
-    if (selectedTask.value?.id === taskId) {
-      selectedTask.value = { ...selectedTask.value, isCompleted };
+    try {
+      await api.patch(`/tasks/${taskId}`, { isCompleted });
+      await fetchTasks(listId);
+      // Rafraîchir le détail si c'est la tâche affichée
+      if (selectedTask.value?.id === taskId) {
+        selectedTask.value = { ...selectedTask.value, isCompleted };
+      }
+    } catch {
+      // Recharger pour restaurer l'état correct
+      await fetchTasks(listId);
     }
   };
 
   const deleteTask = async (taskId: number, listId: number) => {
-    await api.delete(`/tasks/${taskId}`);
-    await fetchTasks(listId);
+    try {
+      await api.delete(`/tasks/${taskId}`);
+      await fetchTasks(listId);
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   return {

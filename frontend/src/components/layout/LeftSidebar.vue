@@ -17,7 +17,7 @@ const emit = defineEmits<{
 }>();
 
 const { lists, error, fetchLists, createList, deleteList } = useTaskLists();
-const { logout } = useAuth();
+const { user, logout } = useAuth();
 
 const showCreateInput = ref(false);
 const newListName = ref('');
@@ -34,10 +34,19 @@ const handleCreate = async () => {
   }
 };
 
+const handleCreateButton = () => {
+  if (props.collapsed) {
+    emit('toggle');
+    showCreateInput.value = true;
+  } else {
+    showCreateInput.value = !showCreateInput.value;
+  }
+};
+
 const confirmDelete = async () => {
   if (listToDelete.value === null) return;
-  await deleteList(listToDelete.value);
-  if (props.selectedListId === listToDelete.value) {
+  const ok = await deleteList(listToDelete.value);
+  if (ok && props.selectedListId === listToDelete.value) {
     emit('list-deleted');
   }
   listToDelete.value = null;
@@ -56,7 +65,7 @@ const confirmDelete = async () => {
         <Menu v-else class="w-5 h-5 text-gray-600" />
       </button>
       <button
-        @click="showCreateInput = !showCreateInput"
+        @click="handleCreateButton"
         class="p-2 hover:bg-gray-100 rounded-lg"
         title="Nouvelle liste"
       >
@@ -112,7 +121,7 @@ const confirmDelete = async () => {
         class="flex items-center gap-2 w-full p-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg"
       >
         <LogOut class="w-4 h-4" />
-        <span v-if="!collapsed">Déconnexion</span>
+        <span v-if="!collapsed">{{ user?.firstName || 'Déconnexion' }}</span>
       </button>
     </div>
 

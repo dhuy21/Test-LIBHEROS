@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -16,7 +17,7 @@ export class TaskListsService {
   async create(name: string, userId: number) {
     const trimmed = name.trim();
     if (!trimmed) {
-      throw new ConflictException('Le nom ne peut pas être vide');
+      throw new BadRequestException('Le nom ne peut pas être vide');
     }
     try {
       return await this.taskListModel.create({ name: trimmed, userId } as any);
