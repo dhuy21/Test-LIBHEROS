@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useAuth } from '../composables/useAuth';
 import LeftSidebar from '../components/layout/LeftSidebar.vue';
 import MainContent from '../components/layout/MainContent.vue';
 import RightSidebar from '../components/layout/RightSidebar.vue';
-
-const { user } = useAuth();
 
 const sidebarCollapsed = ref(false);
 const selectedListId = ref<number | null>(null);

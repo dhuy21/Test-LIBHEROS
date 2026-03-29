@@ -43,14 +43,4 @@ export class TaskListsService {
     }
     await list.destroy();
   }
-
-  async verifyOwnership(listId: number, userId: number) {
-    const list = await this.taskListModel.findOne({
-      where: { id: listId, userId },
-    });
-    if (!list) {
-      throw new NotFoundException('Liste non trouvée');
-    }
-    return list;
-  }
 }
