@@ -32,7 +32,8 @@ export function useAuth() {
       localStorage.setItem('token', data.accessToken);
       router.push('/');
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Erreur lors de l\'inscription';
+      const msg = err.response?.data?.message;
+      error.value = Array.isArray(msg) ? msg.join(', ') : (msg || 'Erreur lors de l\'inscription');
     } finally {
       loading.value = false;
     }
@@ -49,7 +50,8 @@ export function useAuth() {
       localStorage.setItem('token', data.accessToken);
       router.push('/');
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Erreur lors de la connexion';
+      const msg = err.response?.data?.message;
+      error.value = Array.isArray(msg) ? msg.join(', ') : (msg || 'Erreur lors de la connexion');
     } finally {
       loading.value = false;
     }
