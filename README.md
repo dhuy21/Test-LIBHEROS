@@ -17,10 +17,11 @@ le cadre du test technique Libheros.
 ### Avec Docker (recommandé)
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
-Application accessible sur **http://localhost:5173**
+- Frontend : **http://localhost:5173**
+- Backend API : **http://localhost:3000**
 
 ### Sans Docker
 
