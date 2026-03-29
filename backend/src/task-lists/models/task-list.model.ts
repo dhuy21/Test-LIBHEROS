@@ -7,6 +7,7 @@ import { Task } from '../../tasks/models/task.model';
 
 @Table({
   tableName: 'task_lists',
+  underscored: true,
   indexes: [{ unique: true, fields: ['name', 'user_id'] }],
 })
 export class TaskList extends Model {
@@ -14,20 +15,19 @@ export class TaskList extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  name: string;
+  declare name: string;
 
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
-    field: 'user_id',
     onDelete: 'CASCADE',
   })
-  userId: number;
+  declare userId: number;
 
   @BelongsTo(() => User)
-  user: User;
+  declare user: User;
 
   @HasMany(() => Task)
-  tasks: Task[];
+  declare tasks: Task[];
 }
