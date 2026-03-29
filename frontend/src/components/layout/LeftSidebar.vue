@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { Menu, Plus, Trash2, LogOut, ChevronLeft } from 'lucide-vue-next';
+import { Menu, Plus, Trash2, LogOut, ChevronLeft, FolderOpen } from 'lucide-vue-next';
 import { useTaskLists } from '../../composables/useTaskLists';
 import { useAuth } from '../../composables/useAuth';
 import ConfirmModal from '../ui/ConfirmModal.vue';
@@ -16,7 +16,7 @@ const emit = defineEmits<{
   'list-deleted': [];
 }>();
 
-const { lists, error, fetchLists, createList, deleteList } = useTaskLists();
+const { lists, loading, error, fetchLists, createList, deleteList } = useTaskLists();
 const { user, logout } = useAuth();
 
 const showCreateInput = ref(false);
@@ -80,7 +80,7 @@ const confirmDelete = async () => {
           v-model="newListName"
           type="text"
           placeholder="Nom de la liste"
-          class="flex-1 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+          class="flex-1 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           autofocus
         />
         <button type="submit" class="px-2 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
@@ -92,6 +92,13 @@ const confirmDelete = async () => {
 
     <!-- Listes -->
     <div class="flex-1 overflow-y-auto">
+      <div v-if="loading && !collapsed" class="flex items-center justify-center py-8">
+        <div class="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+      <div v-else-if="lists.length === 0 && !collapsed" class="flex flex-col items-center text-gray-400 py-8">
+        <FolderOpen class="w-8 h-8 mb-2" />
+        <p class="text-sm">Aucune liste</p>
+      </div>
       <div
         v-for="list in lists"
         :key="list.id"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
+import { ClipboardList, Inbox } from 'lucide-vue-next';
 import { useTasks } from '../../composables/useTasks';
 import TaskForm from '../tasks/TaskForm.vue';
 import TaskItem from '../tasks/TaskItem.vue';
@@ -43,8 +44,9 @@ const handleToggle = async (taskId: number, isCompleted: boolean) => {
 <template>
   <main class="flex-1 p-6 overflow-y-auto">
     <!-- Aucune liste sélectionnée -->
-    <div v-if="!selectedListId" class="flex items-center justify-center h-full">
-      <p class="text-gray-400 text-lg">Sélectionnez une liste pour voir les tâches</p>
+    <div v-if="!selectedListId" class="flex flex-col items-center justify-center h-full text-gray-400">
+      <ClipboardList class="w-12 h-12 mb-3" />
+      <p class="text-lg">Sélectionnez une liste pour voir les tâches</p>
     </div>
 
     <div v-else>
@@ -58,9 +60,10 @@ const handleToggle = async (taskId: number, isCompleted: boolean) => {
 
       <template v-else>
         <!-- Aucune tâche -->
-        <p v-if="tasks.length === 0" class="text-center text-gray-400 py-8">
-          Aucune tâche pour le moment. Créez-en une !
-        </p>
+        <div v-if="tasks.length === 0" class="flex flex-col items-center text-gray-400 py-12">
+          <Inbox class="w-10 h-10 mb-2" />
+          <p>Aucune tâche pour le moment. Créez-en une !</p>
+        </div>
 
         <!-- Tâches actives -->
         <div v-else class="space-y-1">

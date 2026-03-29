@@ -36,7 +36,7 @@ const formatDate = (date: string) => {
       type="checkbox"
       :checked="task.isCompleted"
       @click.stop="$emit('toggle', task.id, !task.isCompleted)"
-      class="w-5 h-5 accent-blue-600 shrink-0"
+      class="w-5 h-5 accent-blue-600 shrink-0 focus:ring-2 focus:ring-blue-500 rounded"
     />
     <span
       :class="['flex-1 text-sm', task.isCompleted ? 'line-through text-gray-400' : 'text-gray-800']"
