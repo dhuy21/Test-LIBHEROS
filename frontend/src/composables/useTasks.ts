@@ -27,13 +27,12 @@ export function useTasks() {
   const createTask = async (
     listId: number,
     shortDescription: string,
-    dueDate?: string,
+    dueDate: string,
     longDescription?: string,
   ) => {
     error.value = null;
     try {
-      const payload: Record<string, string> = { shortDescription };
-      if (dueDate) payload.dueDate = dueDate;
+      const payload: Record<string, string> = { shortDescription, dueDate };
       if (longDescription) payload.longDescription = longDescription;
       await api.post(`/task-lists/${listId}/tasks`, payload);
       await fetchTasks(listId);

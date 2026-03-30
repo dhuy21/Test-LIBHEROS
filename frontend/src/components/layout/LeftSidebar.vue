@@ -44,7 +44,12 @@ const handleCreate = async () => {
 };
 
 const handleCreateButton = () => {
-  showCreateInput.value = !showCreateInput.value;
+  if (props.collapsed) {
+    emit('toggle');
+    showCreateInput.value = true;
+  } else {
+    showCreateInput.value = !showCreateInput.value;
+  }
 };
 
 const startRename = (id: number, name: string) => {
@@ -74,13 +79,12 @@ const confirmDelete = async () => {
     class="h-screen bg-white border-r border-gray-200 flex flex-col transition-all duration-300 shrink-0"
   >
     <!-- Header -->
-    <div class="flex items-center justify-between p-3 border-b border-gray-200">
+    <div :class="['flex p-3 border-b border-gray-200', collapsed ? 'flex-col items-center gap-2' : 'items-center justify-between']">
       <button @click="emit('toggle')" class="p-2 hover:bg-gray-100 rounded-lg active:scale-95 transition-transform">
         <ChevronLeft v-if="!collapsed" class="w-5 h-5 text-gray-600" />
         <Menu v-else class="w-5 h-5 text-gray-600" />
       </button>
       <button
-        v-if="!collapsed"
         @click="handleCreateButton"
         class="p-2 hover:bg-gray-100 rounded-lg active:scale-95 transition-transform"
         title="Nouvelle liste"

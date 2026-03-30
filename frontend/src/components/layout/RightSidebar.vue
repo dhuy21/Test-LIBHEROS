@@ -41,19 +41,19 @@ const startEdit = () => {
   editForm.value = {
     shortDescription: selectedTask.value.shortDescription,
     longDescription: selectedTask.value.longDescription || '',
-    dueDate: selectedTask.value.dueDate || '',
+    dueDate: selectedTask.value.dueDate,
   };
   editing.value = true;
 };
 
 const saveEdit = async () => {
-  if (!selectedTask.value || !editForm.value.shortDescription.trim()) return;
+  if (!selectedTask.value || !editForm.value.shortDescription.trim() || !editForm.value.dueDate) return;
   const ok = await updateTask(
     selectedTask.value.id,
     {
       shortDescription: editForm.value.shortDescription.trim(),
       longDescription: editForm.value.longDescription.trim() || null,
-      dueDate: editForm.value.dueDate || null,
+      dueDate: editForm.value.dueDate,
     },
     selectedTask.value.taskListId,
   );
@@ -134,6 +134,7 @@ const formatDate = (date: string) => {
           v-model="editForm.dueDate"
           type="date"
           :min="today"
+          required
           class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm hover:border-gray-400 transition-shadow duration-150"
         />
       </div>
@@ -170,7 +171,7 @@ const formatDate = (date: string) => {
       <div>
         <label class="text-xs text-gray-500 uppercase tracking-wide">Date d'échéance</label>
         <p class="text-gray-800 mt-1 text-sm">
-          {{ selectedTask.dueDate ? formatDate(selectedTask.dueDate) : 'Non définie' }}
+          {{ formatDate(selectedTask.dueDate) }}
         </p>
       </div>
 

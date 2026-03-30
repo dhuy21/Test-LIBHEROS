@@ -31,7 +31,7 @@ watch(
   },
 );
 
-const handleCreate = async (shortDescription: string, dueDate?: string, longDescription?: string) => {
+const handleCreate = async (shortDescription: string, dueDate: string, longDescription?: string) => {
   if (!props.selectedListId) return;
   await createTask(props.selectedListId, shortDescription, dueDate, longDescription);
 };

@@ -38,16 +38,14 @@ export class TasksService {
 
   async create(listId: number, dto: CreateTaskDto, userId: number) {
     await this.verifyListOwnership(listId, userId);
-    if (dto.dueDate) {
-      const today = new Date().toISOString().split('T')[0];
-      if (dto.dueDate < today) {
-        throw new BadRequestException("La date d'échéance ne peut pas être dans le passé");
-      }
+    const today = new Date().toISOString().split('T')[0];
+    if (dto.dueDate < today) {
+      throw new BadRequestException("La date d'échéance ne peut pas être dans le passé");
     }
     return this.taskModel.create({
       shortDescription: dto.shortDescription.trim(),
       longDescription: dto.longDescription?.trim() || null,
-      dueDate: dto.dueDate || null,
+      dueDate: dto.dueDate,
       taskListId: listId,
     } as any);
   }

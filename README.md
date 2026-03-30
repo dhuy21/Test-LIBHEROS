@@ -54,7 +54,7 @@ npm run test:e2e
 
 - Authentification JWT (inscription avec vérification + connexion)
 - CRUD complet listes de tâches (création, lecture, renommage, suppression)
-- CRUD complet tâches (description courte/longue, échéance optionnelle, statut)
+- CRUD complet tâches (description courte/longue, échéance, statut)
 - Modification des tâches (description, échéance) via vue détaillée
 - Renommage des listes (double-clic)
 - Toggle tâches terminées / à faire

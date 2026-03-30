@@ -11,7 +11,7 @@ export class UpdateTaskDto {
 
   @IsDateString()
   @IsOptional()
-  dueDate?: string | null;
+  dueDate?: string;
 
   @IsBoolean()
   @IsOptional()
