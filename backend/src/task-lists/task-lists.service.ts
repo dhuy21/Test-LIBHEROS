@@ -37,6 +37,27 @@ export class TaskListsService {
     });
   }
 
+  async update(id: number, name: string, userId: number) {
+    const list = await this.taskListModel.findOne({ where: { id, userId } });
+    if (!list) {
+      throw new NotFoundException('Liste non trouvée');
+    }
+    const trimmed = name.trim();
+    if (!trimmed) {
+      throw new BadRequestException('Le nom ne peut pas être vide');
+    }
+    try {
+      list.name = trimmed;
+      await list.save();
+      return list;
+    } catch (error) {
+      if (error instanceof UniqueConstraintError) {
+        throw new ConflictException('Une liste avec ce nom existe déjà');
+      }
+      throw error;
+    }
+  }
+
   async remove(id: number, userId: number) {
     const list = await this.taskListModel.findOne({ where: { id, userId } });
     if (!list) {

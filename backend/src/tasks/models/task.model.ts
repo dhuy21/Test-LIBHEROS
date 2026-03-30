@@ -20,9 +20,9 @@ export class Task extends Model {
 
   @Column({
     type: DataType.DATEONLY,
-    allowNull: false,
+    allowNull: true,
   })
-  declare dueDate: string;
+  declare dueDate: string | null;
 
   @Column({
     type: DataType.BOOLEAN,

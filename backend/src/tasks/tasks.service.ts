@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { TaskList } from '../task-lists/models/task-list.model';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -38,10 +38,16 @@ export class TasksService {
 
   async create(listId: number, dto: CreateTaskDto, userId: number) {
     await this.verifyListOwnership(listId, userId);
+    if (dto.dueDate) {
+      const today = new Date().toISOString().split('T')[0];
+      if (dto.dueDate < today) {
+        throw new BadRequestException("La date d'échéance ne peut pas être dans le passé");
+      }
+    }
     return this.taskModel.create({
       shortDescription: dto.shortDescription.trim(),
       longDescription: dto.longDescription?.trim() || null,
-      dueDate: dto.dueDate,
+      dueDate: dto.dueDate || null,
       taskListId: listId,
     } as any);
   }
@@ -72,7 +78,24 @@ export class TasksService {
 
   async update(taskId: number, dto: UpdateTaskDto, userId: number) {
     const task = await this.verifyTaskOwnership(taskId, userId);
-    task.isCompleted = dto.isCompleted;
+    if (dto.shortDescription !== undefined) {
+      task.shortDescription = dto.shortDescription.trim();
+    }
+    if (dto.longDescription !== undefined) {
+      task.longDescription = dto.longDescription?.trim() || null;
+    }
+    if (dto.dueDate !== undefined) {
+      if (dto.dueDate && dto.dueDate !== task.dueDate) {
+        const today = new Date().toISOString().split('T')[0];
+        if (dto.dueDate < today) {
+          throw new BadRequestException("La date d'échéance ne peut pas être dans le passé");
+        }
+      }
+      task.dueDate = dto.dueDate;
+    }
+    if (dto.isCompleted !== undefined) {
+      task.isCompleted = dto.isCompleted;
+    }
     await task.save();
     return task;
   }

@@ -6,16 +6,19 @@ import type { Task } from '../types';
 const tasks = ref<Task[]>([]);
 const selectedTask = ref<Task | null>(null);
 const loading = ref(false);
+const error = ref<string | null>(null);
 
 export function useTasks() {
 
   const fetchTasks = async (listId: number) => {
     loading.value = true;
+    error.value = null;
     try {
       const { data } = await api.get<Task[]>(`/task-lists/${listId}/tasks`);
       tasks.value = data;
     } catch {
       tasks.value = [];
+      error.value = 'Erreur lors du chargement des tâches';
     } finally {
       loading.value = false;
     }
@@ -24,23 +27,24 @@ export function useTasks() {
   const createTask = async (
     listId: number,
     shortDescription: string,
-    dueDate: string,
+    dueDate?: string,
     longDescription?: string,
   ) => {
+    error.value = null;
     try {
-      await api.post(`/task-lists/${listId}/tasks`, {
-        shortDescription,
-        dueDate,
-        longDescription,
-      });
+      const payload: Record<string, string> = { shortDescription };
+      if (dueDate) payload.dueDate = dueDate;
+      if (longDescription) payload.longDescription = longDescription;
+      await api.post(`/task-lists/${listId}/tasks`, payload);
       await fetchTasks(listId);
     } catch {
-      // Recharger pour rester synchronisé avec le serveur
+      error.value = 'Erreur lors de la création';
       await fetchTasks(listId);
     }
   };
 
   const fetchTaskDetail = async (taskId: number) => {
+    selectedTask.value = null;
     try {
       const { data } = await api.get<Task>(`/tasks/${taskId}`);
       selectedTask.value = data;
@@ -49,16 +53,31 @@ export function useTasks() {
     }
   };
 
+  const updateTask = async (taskId: number, data: Partial<Pick<Task, 'shortDescription' | 'longDescription' | 'dueDate' | 'isCompleted'>>, listId: number) => {
+    error.value = null;
+    try {
+      await api.patch(`/tasks/${taskId}`, data);
+      await fetchTasks(listId);
+      if (selectedTask.value?.id === taskId) {
+        await fetchTaskDetail(taskId);
+      }
+      return true;
+    } catch {
+      error.value = 'Erreur lors de la mise à jour';
+      return false;
+    }
+  };
+
   const toggleTask = async (taskId: number, isCompleted: boolean, listId: number) => {
+    error.value = null;
     try {
       await api.patch(`/tasks/${taskId}`, { isCompleted });
       await fetchTasks(listId);
-      // Rafraîchir le détail si c'est la tâche affichée
       if (selectedTask.value?.id === taskId) {
         selectedTask.value = { ...selectedTask.value, isCompleted };
       }
     } catch {
-      // Recharger pour restaurer l'état correct
+      error.value = 'Erreur lors de la mise à jour';
       await fetchTasks(listId);
     }
   };
@@ -69,12 +88,13 @@ export function useTasks() {
       await fetchTasks(listId);
       return true;
     } catch {
+      error.value = 'Erreur lors de la suppression';
       return false;
     }
   };
 
   return {
-    tasks, selectedTask, loading,
-    fetchTasks, createTask, fetchTaskDetail, toggleTask, deleteTask,
+    tasks, selectedTask, loading, error,
+    fetchTasks, createTask, fetchTaskDetail, updateTask, toggleTask, deleteTask,
   };
 }

@@ -11,8 +11,8 @@ defineEmits<{
   toggle: [id: number, isCompleted: boolean];
 }>();
 
-const isOverdue = (date: string, completed: boolean) => {
-  if (completed) return false;
+const isOverdue = (date: string | null, completed: boolean) => {
+  if (!date || completed) return false;
   return new Date(date) < new Date(new Date().toDateString());
 };
 
@@ -26,7 +26,10 @@ const formatDate = (date: string) => {
 
 <template>
   <div
+    role="button"
+    tabindex="0"
     @click="$emit('select', task.id)"
+    @keydown.enter="$emit('select', task.id)"
     :class="[
       'flex items-center gap-3 p-3 rounded-lg cursor-pointer border transition-colors',
       isSelected ? 'bg-blue-50 border-blue-200' : 'hover:bg-gray-50 border-transparent',
@@ -44,6 +47,7 @@ const formatDate = (date: string) => {
       {{ task.shortDescription }}
     </span>
     <span
+      v-if="task.dueDate"
       :class="['text-xs shrink-0', isOverdue(task.dueDate, task.isCompleted) ? 'text-red-500 font-medium' : 'text-gray-400']"
     >
       {{ formatDate(task.dueDate) }}

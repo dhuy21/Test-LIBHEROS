@@ -7,11 +7,16 @@ const user = ref<User | null>(null);
 const token = ref<string | null>(null);
 
 // Charger depuis localStorage au démarrage
-const savedUser = localStorage.getItem('user');
 const savedToken = localStorage.getItem('token');
+const savedUser = localStorage.getItem('user');
 if (savedUser && savedToken) {
-  user.value = JSON.parse(savedUser);
-  token.value = savedToken;
+  try {
+    user.value = JSON.parse(savedUser);
+    token.value = savedToken;
+  } catch {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+  }
 }
 
 export function useAuth() {

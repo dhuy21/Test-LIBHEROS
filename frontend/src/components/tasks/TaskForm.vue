@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Plus } from 'lucide-vue-next';
 
+const today = computed(() => new Date().toISOString().split('T')[0]);
+
 const emit = defineEmits<{
-  create: [shortDescription: string, dueDate: string, longDescription?: string];
+  create: [shortDescription: string, dueDate: string | undefined, longDescription?: string];
 }>();
 
 const shortDescription = ref('');
@@ -11,14 +13,13 @@ const longDescription = ref('');
 const dueDate = ref('');
 
 const handleSubmit = () => {
-  if (!shortDescription.value.trim() || !dueDate.value) return;
+  if (!shortDescription.value.trim()) return;
   emit(
     'create',
     shortDescription.value.trim(),
-    dueDate.value,
+    dueDate.value || undefined,
     longDescription.value.trim() || undefined,
   );
-  // Reset le formulaire
   shortDescription.value = '';
   longDescription.value = '';
   dueDate.value = '';
@@ -45,8 +46,9 @@ const handleSubmit = () => {
         <input
           v-model="dueDate"
           type="date"
+          :min="today"
+          placeholder="Date d'échéance (optionnel)"
           class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-          required
         />
         <button
           type="submit"

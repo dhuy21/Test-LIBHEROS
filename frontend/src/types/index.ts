@@ -15,7 +15,7 @@ export interface Task {
   id: number;
   shortDescription: string;
   longDescription: string | null;
-  dueDate: string;
+  dueDate: string | null;
   isCompleted: boolean;
   taskListId: number;
   createdAt: string;

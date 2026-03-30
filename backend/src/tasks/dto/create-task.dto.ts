@@ -10,5 +10,6 @@ export class CreateTaskDto {
   longDescription?: string;
 
   @IsDateString()
-  dueDate: string;
+  @IsOptional()
+  dueDate?: string;
 }

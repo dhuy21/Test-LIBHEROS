@@ -53,8 +53,10 @@ npm run test:e2e
 ## Fonctionnalités
 
 - Authentification JWT (inscription avec vérification + connexion)
-- CRUD listes de tâches (nom unique par utilisateur)
-- CRUD tâches (description courte/longue, échéance, statut)
+- CRUD complet listes de tâches (création, lecture, renommage, suppression)
+- CRUD complet tâches (description courte/longue, échéance optionnelle, statut)
+- Modification des tâches (description, échéance) via vue détaillée
+- Renommage des listes (double-clic)
 - Toggle tâches terminées / à faire
 - Section "Mes tâches terminées" (masquable)
 - Vue détaillée avec date de création
@@ -91,11 +93,12 @@ npm run test:e2e
 | POST    | /auth/login                | Connexion                 |
 | POST    | /task-lists                | Créer une liste           |
 | GET     | /task-lists                | Lister ses listes         |
+| PATCH   | /task-lists/:id            | Renommer une liste        |
 | DELETE  | /task-lists/:id            | Supprimer une liste       |
 | POST    | /task-lists/:listId/tasks  | Créer une tâche           |
 | GET     | /task-lists/:listId/tasks  | Lister les tâches         |
 | GET     | /tasks/:id                 | Détail d'une tâche        |
-| PATCH   | /tasks/:id                 | Toggle terminée           |
+| PATCH   | /tasks/:id                 | Modifier une tâche        |
 | DELETE  | /tasks/:id                 | Supprimer une tâche       |
 
 ## Auteur

@@ -22,6 +22,7 @@ import { TasksModule } from './tasks/tasks.module';
         database: config.get('DB_DATABASE'),
         autoLoadModels: true,
         synchronize: true,
+        sync: { alter: true },
         logging: false,
       }),
     }),

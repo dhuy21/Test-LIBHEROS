@@ -1,9 +1,10 @@
 import {
-  Controller, Post, Get, Delete,
+  Controller, Post, Get, Patch, Delete,
   Body, Param, UseGuards, Request, ParseIntPipe,
 } from '@nestjs/common';
 import { TaskListsService } from './task-lists.service';
 import { CreateTaskListDto } from './dto/create-task-list.dto';
+import { UpdateTaskListDto } from './dto/update-task-list.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('task-lists')
@@ -19,6 +20,15 @@ export class TaskListsController {
   @Get()
   findAll(@Request() req) {
     return this.taskListsService.findAllByUser(req.user.id);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateTaskListDto,
+    @Request() req,
+  ) {
+    return this.taskListsService.update(id, dto.name, req.user.id);
   }
 
   @Delete(':id')

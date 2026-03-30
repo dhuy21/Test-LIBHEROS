@@ -16,12 +16,14 @@ const emit = defineEmits<{
   'list-deleted': [];
 }>();
 
-const { lists, loading, error, fetchLists, createList, deleteList } = useTaskLists();
+const { lists, loading, error, fetchLists, createList, updateList, deleteList } = useTaskLists();
 const { user, logout } = useAuth();
 
 const showCreateInput = ref(false);
 const newListName = ref('');
 const listToDelete = ref<number | null>(null);
+const editingListId = ref<number | null>(null);
+const editingName = ref('');
 
 onMounted(fetchLists);
 
@@ -41,6 +43,17 @@ const handleCreateButton = () => {
   } else {
     showCreateInput.value = !showCreateInput.value;
   }
+};
+
+const startRename = (id: number, name: string) => {
+  editingListId.value = id;
+  editingName.value = name;
+};
+
+const saveRename = async () => {
+  if (!editingListId.value || !editingName.value.trim()) return;
+  await updateList(editingListId.value, editingName.value.trim());
+  editingListId.value = null;
 };
 
 const confirmDelete = async () => {
@@ -102,7 +115,11 @@ const confirmDelete = async () => {
       <div
         v-for="list in lists"
         :key="list.id"
+        role="button"
+        tabindex="0"
         @click="emit('select-list', list.id)"
+        @dblclick.stop="!collapsed && startRename(list.id, list.name)"
+        @keydown.enter="emit('select-list', list.id)"
         :class="[
           'flex items-center gap-2 px-3 py-2 cursor-pointer group',
           selectedListId === list.id
@@ -110,9 +127,26 @@ const confirmDelete = async () => {
             : 'hover:bg-gray-50 border-l-2 border-transparent'
         ]"
       >
-        <span v-if="!collapsed" class="flex-1 text-sm text-gray-800 truncate">{{ list.name }}</span>
+        <!-- Mode rename -->
+        <form
+          v-if="editingListId === list.id && !collapsed"
+          @submit.prevent="saveRename"
+          @click.stop
+          class="flex-1"
+        >
+          <input
+            v-model="editingName"
+            type="text"
+            class="w-full px-2 py-0.5 text-sm border border-blue-400 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+            autofocus
+            @blur="saveRename"
+            @keyup.escape="editingListId = null"
+          />
+        </form>
+        <!-- Mode normal -->
+        <span v-else-if="!collapsed" class="flex-1 text-sm text-gray-800 truncate">{{ list.name }}</span>
         <button
-          v-if="!collapsed"
+          v-if="!collapsed && editingListId !== list.id"
           @click.stop="listToDelete = list.id"
           class="p-1 opacity-0 group-hover:opacity-100 hover:text-red-500 transition-opacity"
         >
