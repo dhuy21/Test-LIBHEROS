@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { Menu, Plus, Trash2, LogOut, ChevronLeft, FolderOpen } from 'lucide-vue-next';
 import { useTaskLists } from '../../composables/useTaskLists';
 import { useAuth } from '../../composables/useAuth';
@@ -27,6 +27,13 @@ const editingName = ref('');
 
 onMounted(fetchLists);
 
+watch(() => props.collapsed, (isCollapsed) => {
+  if (isCollapsed) {
+    showCreateInput.value = false;
+    editingListId.value = null;
+  }
+});
+
 const handleCreate = async () => {
   if (!newListName.value.trim()) return;
   const ok = await createList(newListName.value.trim());
@@ -37,12 +44,7 @@ const handleCreate = async () => {
 };
 
 const handleCreateButton = () => {
-  if (props.collapsed) {
-    emit('toggle');
-    showCreateInput.value = true;
-  } else {
-    showCreateInput.value = !showCreateInput.value;
-  }
+  showCreateInput.value = !showCreateInput.value;
 };
 
 const startRename = (id: number, name: string) => {
@@ -73,13 +75,14 @@ const confirmDelete = async () => {
   >
     <!-- Header -->
     <div class="flex items-center justify-between p-3 border-b border-gray-200">
-      <button @click="emit('toggle')" class="p-2 hover:bg-gray-100 rounded-lg">
+      <button @click="emit('toggle')" class="p-2 hover:bg-gray-100 rounded-lg active:scale-95 transition-transform">
         <ChevronLeft v-if="!collapsed" class="w-5 h-5 text-gray-600" />
         <Menu v-else class="w-5 h-5 text-gray-600" />
       </button>
       <button
+        v-if="!collapsed"
         @click="handleCreateButton"
-        class="p-2 hover:bg-gray-100 rounded-lg"
+        class="p-2 hover:bg-gray-100 rounded-lg active:scale-95 transition-transform"
         title="Nouvelle liste"
       >
         <Plus class="w-5 h-5 text-blue-600" />
@@ -96,7 +99,7 @@ const confirmDelete = async () => {
           class="flex-1 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           autofocus
         />
-        <button type="submit" class="px-2 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+        <button type="submit" class="px-2 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 active:scale-95 transition-all">
           OK
         </button>
       </form>
@@ -121,15 +124,25 @@ const confirmDelete = async () => {
         @dblclick.stop="!collapsed && startRename(list.id, list.name)"
         @keydown.enter="emit('select-list', list.id)"
         :class="[
-          'flex items-center gap-2 px-3 py-2 cursor-pointer group',
+          'flex items-center py-2 cursor-pointer group transition-colors duration-150',
+          collapsed ? 'justify-center px-2' : 'gap-2 px-3',
           selectedListId === list.id
             ? 'bg-blue-50 border-l-2 border-blue-500'
             : 'hover:bg-gray-50 border-l-2 border-transparent'
         ]"
       >
+        <!-- Collapsed : initiale du nom -->
+        <span
+          v-if="collapsed"
+          class="w-8 h-8 flex items-center justify-center text-xs font-medium rounded"
+          :class="selectedListId === list.id ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'"
+          :title="list.name"
+        >
+          {{ list.name.charAt(0).toUpperCase() }}
+        </span>
         <!-- Mode rename -->
         <form
-          v-if="editingListId === list.id && !collapsed"
+          v-else-if="editingListId === list.id"
           @submit.prevent="saveRename"
           @click.stop
           class="flex-1"
@@ -144,7 +157,7 @@ const confirmDelete = async () => {
           />
         </form>
         <!-- Mode normal -->
-        <span v-else-if="!collapsed" class="flex-1 text-sm text-gray-800 truncate">{{ list.name }}</span>
+        <span v-else class="flex-1 text-sm text-gray-800 truncate">{{ list.name }}</span>
         <button
           v-if="!collapsed && editingListId !== list.id"
           @click.stop="listToDelete = list.id"

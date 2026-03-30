@@ -29,13 +29,15 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div class="w-full max-w-md p-8 bg-white rounded-xl shadow-md">
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
+    <div class="w-full max-w-md p-8 bg-white rounded-xl shadow-lg">
       <h1 class="text-2xl font-bold text-center mb-6">Inscription</h1>
 
-      <div v-if="error" class="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
-        {{ error }}
-      </div>
+      <Transition name="fade">
+        <div v-if="error" class="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
+          {{ error }}
+        </div>
+      </Transition>
 
       <form @submit.prevent="handleSubmit" class="space-y-4">
         <div class="grid grid-cols-2 gap-4">
@@ -46,7 +48,8 @@ const handleSubmit = () => {
               v-model="firstName"
               type="text"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              autocomplete="given-name"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 transition-shadow duration-150"
             />
           </div>
           <div>
@@ -56,7 +59,8 @@ const handleSubmit = () => {
               v-model="lastName"
               type="text"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              autocomplete="family-name"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 transition-shadow duration-150"
             />
           </div>
         </div>
@@ -68,7 +72,8 @@ const handleSubmit = () => {
             v-model="email"
             type="email"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            autocomplete="email"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 transition-shadow duration-150"
           />
         </div>
 
@@ -79,8 +84,9 @@ const handleSubmit = () => {
             v-model="confirmEmail"
             type="email"
             required
+            autocomplete="email"
             :class="[
-              'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+              'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 transition-shadow duration-150',
               confirmEmail && !emailMatch ? 'border-red-400' : 'border-gray-300'
             ]"
           />
@@ -95,7 +101,8 @@ const handleSubmit = () => {
             type="password"
             required
             minlength="6"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            autocomplete="new-password"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 transition-shadow duration-150"
           />
           <p v-if="password && password.length < 6" class="mt-1 text-sm text-red-500">6 caractères minimum</p>
         </div>
@@ -107,8 +114,9 @@ const handleSubmit = () => {
             v-model="confirmPassword"
             type="password"
             required
+            autocomplete="new-password"
             :class="[
-              'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500',
+              'w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 transition-shadow duration-150',
               confirmPassword && !passwordMatch ? 'border-red-400' : 'border-gray-300'
             ]"
           />
@@ -118,8 +126,9 @@ const handleSubmit = () => {
         <button
           type="submit"
           :disabled="loading || !canSubmit"
-          class="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          class="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
         >
+          <span v-if="loading" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
           {{ loading ? 'Inscription...' : 'S\'inscrire' }}
         </button>
       </form>

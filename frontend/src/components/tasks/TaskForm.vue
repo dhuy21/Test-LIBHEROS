@@ -27,7 +27,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <form @submit.prevent="handleSubmit" class="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+  <form @submit.prevent="handleSubmit" class="bg-white rounded-lg border border-gray-200 p-4 mb-6 shadow-sm hover:shadow transition-shadow duration-150 focus-within:ring-2 focus-within:ring-blue-200 focus-within:border-blue-200">
     <div class="flex flex-col gap-3">
       <input
         v-model="shortDescription"
@@ -52,7 +52,7 @@ const handleSubmit = () => {
         />
         <button
           type="submit"
-          class="ml-auto flex items-center gap-1 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700"
+          class="ml-auto flex items-center gap-1 px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 active:scale-[0.98] transition-all"
         >
           <Plus class="w-4 h-4" />
           Ajouter

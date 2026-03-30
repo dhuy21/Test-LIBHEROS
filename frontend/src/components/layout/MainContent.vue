@@ -9,6 +9,7 @@ import CompletedTasks from '../tasks/CompletedTasks.vue';
 const props = defineProps<{
   selectedListId: number | null;
   selectedTaskId: number | null;
+  listName: string;
 }>();
 
 const emit = defineEmits<{
@@ -50,6 +51,9 @@ const handleToggle = async (taskId: number, isCompleted: boolean) => {
     </div>
 
     <div v-else>
+      <!-- Titre de la liste -->
+      <h2 v-if="listName" class="text-xl font-semibold text-gray-800 mb-4">{{ listName }}</h2>
+
       <!-- Formulaire de création -->
       <TaskForm @create="handleCreate" />
 
@@ -60,9 +64,9 @@ const handleToggle = async (taskId: number, isCompleted: boolean) => {
 
       <template v-else>
         <!-- Aucune tâche -->
-        <div v-if="tasks.length === 0" class="flex flex-col items-center text-gray-400 py-12">
+        <div v-if="tasks.length === 0" class="flex flex-col items-center text-gray-400 py-12 border-2 border-dashed border-gray-200 rounded-xl">
           <Inbox class="w-10 h-10 mb-2" />
-          <p>Aucune tâche pour le moment. Créez-en une !</p>
+          <p class="text-sm">Aucune tâche pour le moment. Créez-en une !</p>
         </div>
 
         <!-- Tâches actives -->

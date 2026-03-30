@@ -13,8 +13,10 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
+    const email = dto.email.toLowerCase();
+
     // Vérifier si l'email existe déjà
-    const existing = await this.usersService.findByEmail(dto.email);
+    const existing = await this.usersService.findByEmail(email);
     if (existing) {
       throw new ConflictException('Cet email est déjà utilisé');
     }
@@ -23,7 +25,9 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
     const user = await this.usersService.create({
-      ...dto,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      email,
       password: hashedPassword,
     });
 
@@ -41,7 +45,7 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
-    const user = await this.usersService.findByEmail(dto.email);
+    const user = await this.usersService.findByEmail(dto.email.toLowerCase());
     if (!user) {
       throw new UnauthorizedException('Email ou mot de passe incorrect');
     }

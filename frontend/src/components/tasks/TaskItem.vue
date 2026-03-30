@@ -31,8 +31,8 @@ const formatDate = (date: string) => {
     @click="$emit('select', task.id)"
     @keydown.enter="$emit('select', task.id)"
     :class="[
-      'flex items-center gap-3 p-3 rounded-lg cursor-pointer border transition-colors',
-      isSelected ? 'bg-blue-50 border-blue-200' : 'hover:bg-gray-50 border-transparent',
+      'flex items-center gap-3 p-3 rounded-lg cursor-pointer border transition-all duration-150',
+      isSelected ? 'bg-blue-50 border-blue-200 shadow-sm' : 'hover:bg-gray-50 hover:border-gray-200 border-transparent',
     ]"
   >
     <input

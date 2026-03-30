@@ -79,7 +79,11 @@ export class TasksService {
   async update(taskId: number, dto: UpdateTaskDto, userId: number) {
     const task = await this.verifyTaskOwnership(taskId, userId);
     if (dto.shortDescription !== undefined) {
-      task.shortDescription = dto.shortDescription.trim();
+      const trimmed = dto.shortDescription.trim();
+      if (!trimmed) {
+        throw new BadRequestException('La description ne peut pas être vide');
+      }
+      task.shortDescription = trimmed;
     }
     if (dto.longDescription !== undefined) {
       task.longDescription = dto.longDescription?.trim() || null;

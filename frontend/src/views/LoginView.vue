@@ -14,13 +14,15 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div class="w-full max-w-md p-8 bg-white rounded-xl shadow-md">
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
+    <div class="w-full max-w-md p-8 bg-white rounded-xl shadow-lg">
       <h1 class="text-2xl font-bold text-center mb-6">Connexion</h1>
 
-      <div v-if="error" class="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
-        {{ error }}
-      </div>
+      <Transition name="fade">
+        <div v-if="error" class="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
+          {{ error }}
+        </div>
+      </Transition>
 
       <form @submit.prevent="handleSubmit" class="space-y-4">
         <div>
@@ -30,7 +32,8 @@ const handleSubmit = () => {
             v-model="email"
             type="email"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            autocomplete="email"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 transition-shadow duration-150"
             placeholder="exemple@email.com"
           />
         </div>
@@ -42,7 +45,8 @@ const handleSubmit = () => {
             v-model="password"
             type="password"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            autocomplete="current-password"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 hover:border-gray-400 transition-shadow duration-150"
             placeholder="••••••••"
           />
         </div>
@@ -50,8 +54,9 @@ const handleSubmit = () => {
         <button
           type="submit"
           :disabled="loading"
-          class="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          class="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
         >
+          <span v-if="loading" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
           {{ loading ? 'Connexion...' : 'Se connecter' }}
         </button>
       </form>

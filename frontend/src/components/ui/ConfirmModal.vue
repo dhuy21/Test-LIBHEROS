@@ -1,12 +1,23 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue';
+
 defineProps<{ message: string }>();
-defineEmits<{ confirm: []; cancel: [] }>();
+const emit = defineEmits<{ confirm: []; cancel: [] }>();
+
+const onKeydown = (e: KeyboardEvent) => {
+  if (e.key === 'Escape') emit('cancel');
+};
+
+onMounted(() => document.addEventListener('keydown', onKeydown));
+onUnmounted(() => document.removeEventListener('keydown', onKeydown));
 </script>
 
 <template>
   <Teleport to="body">
     <div
-      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fade-in"
+      role="dialog"
+      aria-modal="true"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in"
       @click.self="$emit('cancel')"
     >
       <div class="bg-white rounded-lg shadow-xl p-6 max-w-md mx-4 animate-scale-in">
@@ -14,14 +25,14 @@ defineEmits<{ confirm: []; cancel: [] }>();
         <div class="flex justify-end gap-3">
           <button
             type="button"
-            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
+            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 active:scale-[0.98] transition-all"
             @click="$emit('cancel')"
           >
             Annuler
           </button>
           <button
             type="button"
-            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 active:scale-[0.98] transition-all"
             @click="$emit('confirm')"
           >
             Confirmer
